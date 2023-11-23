@@ -1,3 +1,5 @@
+// 여러 개의 테스트 케이스고 한 줄에 정수 A B가 주어진다.
+// 0 0이 오는 순간 종료되고 0 0전까지 A+B가 출력된다.
 const readline = require('readline')
 const rl = readline.createInterface({
     input: process.stdin,
@@ -6,20 +8,16 @@ const rl = readline.createInterface({
 
 let testCases = []
 rl.on('line', function (line) {
-    testCases.push(line)
-    if(testCases.length >= 1) {
-        const T = parseInt(testCases[0])
-        if(testCases.length === T+1) {
-            for (let i = 1; i <= T; i++) {
-                const [A, B] = testCases[i].split(' ').map(Number)
-                console.log(A+B)
-            }
-            rl.close() // for문을 나오면 바로 종료되도록 한다.
-        }
-        
+    if(line === '0 0') {
+        rl.close()
+        return
     }
-    
+    testCases.push(line)
 })
 rl.on('close', ()=> {
+    for (let i = 0; i <= testCases.length -1; i++) {
+        const [A, B] = testCases[i].split(' ').map(Number)
+        console.log(A+B)
+    }
     process.exit()
 })
