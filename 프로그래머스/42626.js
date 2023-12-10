@@ -3,30 +3,31 @@
 // 섞은 음식의 스코빌 지수 = 가장 맵지 않은 음식의 스코빌 지수 + (두 번째로 맵지 않은 음식의 스코빌 지수 * 2)
 // 배열의 각 값이 K 이상이 될 때까지 섞어야 하는 횟수를 return
 
+
 function solution(scoville, K) {
-    let count = 0;
-    const heap = scoville.reduce((heap, food) => {
-        heap.insert(food)
-        return heap
-    }, new MinHeap())
-    console.log(heap)
-    while(heap.getMin() < K) { // 두번째로 작은 값이 K보다 작을때까지 반복
-        if(heap.size() < 2) { // 배열의 값이 부족하니 -1반환, 섞는 것 불가능함
-            return -1;
-        }
-        heap.insert(heap.remove() + heap.remove() * 2) // 가장 작은값, 그리고 다음 작은 값 * 2
-        count += 1
+    const minHeap = new MinHeap()
+    let mixedcount = 0;
+
+    for (const value of scoville) {
+        minHeap.insert(value)
     }
-    return count;
+    while ( minHeap.peek(0) < K ) { // 가장 작은 값이 K보다 클 때까지 반복
+        const firstScoville = minHeap.delete()
+        const secondScoville = minHeap.delete()
+        const mix = firstScoville + secondScoville * 2 // 1st, 2nd숫자를 픽해서 넣어준 후
+        minHeap.insert(mix) // 섞은 값 배열에 추가
+        mixedcount ++ // 섞어주었으니 횟수 추가
+    }
+    return minHeap.peek(0) >= K ? mixedcount : -1;
 }
 
 class MinHeap {
     constructor() {
-        this.heap = [null]
+        this.heap = []
     }
 
-    getMin() {
-        return this.heap[1] // 두 번째로 작은 값
+    peek(n) {
+        return this.heap[n] // n번째로 작은 값
     }
 
     size() {
@@ -35,60 +36,50 @@ class MinHeap {
 
     insert(value) {
         this.heap.push(value)
-        let currentIdx = this.heap.length - 1;
-        let parentIdx = Math.floor(currentIdx / 2)
-        if(this.heap.length > 1) {
-            while( currentIdx > 1 && this.heap[parentIdx] >= this.heap[currentIdx] ) {
-                [this.heap[parentIdx], this.heap[currentIdx]] = [this.heap[currentIdx], this.heap[parentIdx]]
-                currentIdx = parentIdx
-                parentIdx = Math.floor(currentIdx / 2)
-            }
+        if(this.heap.length === 1) { // 배열에 아무것도 없는 상태였다면 
+            return // 값만 넣고 끝내기
         }
+		// 부모노드를 찾은 뒤 부모노드와 비교하여 해당 값이 더 작으면 스와핑
+		let currentIdx = this.size()
+		let parentIdx = Math.floor((currentIdx - 1) / 2)
+		while ( currentIdx > 0 && this.heap[currentIdx] < this.heap[parentIdx] ) { 
+		// while문 사용 : 해당 값이 이 조건에 부합하지 않을때까지 반복
+			[this.heap[currentIdx], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[currentIdx]]
+			// 구조분해 할당을 이용하여 값을 바꿔줌
+			currentIdx = parentIdx
+			parentIdx = Math.floor((currentIdx - 1) / 2 )
+			// 값을 바꿔주었으니 index값도 변경해줌
+		}
     }
 
-    remove() {
-        let smallest = this.heap[1] // 두 번째로 작은 값
+    delete() {
+        const smallestValue = this.heap[0]
+        const biggestValue = this.heap.pop()
 
-        if (this.heap.length > 2) { // 힙의 크기가 3이상이면
-            this.heap[1] = this.heap[this.heap.length - 1] // 가장 큰 값을 두 번째로 작은값 위치에 할당 
-            this.heap.splice(this.heap.length - 1) // 두 번째로 작은 값이 잘라내짐
-
-            if(this.heap.length === 3) { // 배열의 길이가 3이면
-                if(this.heap[1] > this.heap[2]) { 
-                    [this.heap[1], this.heap[2]] = [this.heap[2], this.heap[1]] // 값을 스와핑
-                }
-                return smallest
-            }
-            let current = 1; // 왜 current가 1이지? length -1 이 아니고?
-            let leftChildIdx = current * 2
-            let rightChildIdx = current * 2 + 1
-
-            while (
-                this.heap[leftChildIdx] &&
-                this.heap[rightChildIdx] &&
-                (this.heap[current] > this.heap[leftChildIdx] || 
-                    this.heap[current] > this.heap[rightChildIdx])
+        if(this.heap.length > 0) {
+            this.heap[0] = biggestValue;
+            let currentIdx = 0
+            while(
+                this.heap[currentIdx] > this.heap[currentIdx * 2 + 1] ||
+                this.heap[currentIdx] > this.heap[currentIdx * 2 + 2]
             ) {
-                if (this.heap[leftChildIdx] < this.heap[rightChildIdx]) {
-                    [this.heap[current], this.heap[leftChildIdx]] = 
-                    [this.heap[leftChildIdx], this.heap[current]]
-                    current = leftChildIdx
-                } else {
-                    [this.heap[current], this.heap[rightChildIdx]] =
-                    [this.heap[rightChildIdx], this.heap[current]]
-                    current = rightChildIdx
-                }
-
-                leftChildIdx = current * 2
-                rightChildIdx = current * 2 + 1
+                let smallerChildIdx = 
+                    this.heap[currentIdx * 2 + 1] > this.heap[currentIdx * 2 + 2] 
+                    ? currentIdx * 2 + 2 : currentIdx * 2 + 1
+                // 더 작은 자식노드와 현재 값을 스와핑
+    
+                // 임시 변수를 사용하여 값 교환
+                let temp = this.heap[currentIdx]
+                this.heap[currentIdx] = this.heap[smallerChildIdx]
+                this.heap[smallerChildIdx] = temp
+    
+                // 현재 인덱스를 업데이트
+                currentIdx = smallerChildIdx
             }
-        } else if (this.heap.length === 2) {
-            this.heap.splice(1)
-        } else {
-            return null;
         }
-
-        return smallest
-        
+		
+        return smallestValue // 가장 작은 값 반환
     }
 }
+
+console.log(solution([1, 2, 3, 9, 10, 12], 7))
