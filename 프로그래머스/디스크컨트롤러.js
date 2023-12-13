@@ -12,30 +12,23 @@
 // 5. 총 걸린시간이 있는 배열을 받아 각 값을 더한 후 배열의 크기만큼 나눠준 값을 반환
 // 문제의 의도 : Shortest Job First
 function solution(jobs) {
-    const count = jobs.length;
-    const minHeap = new MinHeap();
-    jobs.sort((a,b) => a[0]-b[0]);
+    const count = jobs.length; // 작업 요청의 수
+    const minHeap = new MinHeap(); // 힙 인스턴스 할당
+    jobs.sort((a,b) => a[0]-b[0]); // 작업을 들어온 순으로 정렬
     
-    let time = 0;
-    let complete = 0;
-    let total = 0;
+    let totalJobs = jobs.length
+    let done = 0; // 작업 순번
+    let temp = []
+    let current = 0
     
-    while(jobs.length || minHeap.size()) {
-      while(jobs.length) {
-        if(jobs[0][0] === time) {
-          minHeap.heappush(jobs.shift());
-        } else break;
-      }
-      
-      if(minHeap.size() && time >= complete) {
-        const task = minHeap.heappop();
-        complete = task[1] + time;
-        total += complete - task[0];
-      }
-      time++;
+    while( done < totalJobs ) { // 
+        while (jobs[0] && current >= jobs[0][0]) {
+            minHeap.heappush(jobs.shift())
+        }
+        if (minHeap.size()) {
+            let [startTime, cost] = minHeap()
+        }
     }
-    
-    return total / count >> 0;
   }
   
   class MinHeap {
@@ -58,7 +51,8 @@ function solution(jobs) {
       heappush(value) {
           this.heap.push(value);
           let curIdx = this.heap.length - 1;
-          let parIdx = (curIdx / 2) >> 0;
+          let parIdx = (curIdx / 2) >> 0; // 정수부분만 자름, -1안하는 이유는 heap이 null 상태이므로
+          // 아무것도 없는 상태에서도 heap의 length는 1이다.
           
           while(curIdx > 1 && this.heap[parIdx][1] > this.heap[curIdx][1]) {
               this.swap(parIdx, curIdx)
@@ -68,33 +62,36 @@ function solution(jobs) {
       }
       
       heappop() {
-          const min = this.heap[1];	
-          if(this.heap.length <= 2) this.heap = [ null ];
-          else this.heap[1] = this.heap.pop();   
+          const min = this.heap[1];	 // 가장 작은 수를 변수에 저장
+          if(this.heap.length <= 2) this.heap = [ null ]; // 가장 작은 수밖에 없다면 heap은 null 상태로 바뀜
+          else this.heap[1] = this.heap.pop();  // 그게 아니라면 가장 끝에있는 수를 첫 번째로 가져옴(min heap의 삭제방법)
           
-          let curIdx = 1;
+          let curIdx = 1; 
           let leftIdx = curIdx * 2;
-          let rightIdx = curIdx * 2 + 1; 
-          
-          if(!this.heap[leftIdx]) return min;
-          if(!this.heap[rightIdx]) {
-              if(this.heap[leftIdx][1] < this.heap[curIdx][1]) {
-                  this.swap(leftIdx, curIdx);
+          let rightIdx = curIdx * 2 + 1; // idx가 1부터 시작하므로 +2가 아니고 1
+          // 삭제 후 정렬
+          if(!this.heap[leftIdx]) return min; // 왼쪽 노드가 없다면 가장 작은 수를 반환
+          if(!this.heap[rightIdx]) { // 오른쪽 노드가 없고 왼쪽 노드만 있는 상태
+              if(this.heap[leftIdx][1] < this.heap[curIdx][1]) { // 왼쪽 자식노드와 현재 노드를 비교해 현재 노드가 더 크면
+                  this.swap(leftIdx, curIdx); // 스왑 후
               }
-              return min;
+              return min; // 가장 작았던 수를 반환
           }
   
           while(this.heap[leftIdx][1] < this.heap[curIdx][1] || this.heap[rightIdx][1] < this.heap[curIdx][1]) {
+            // 왼쪽 자식 idx 또는 오른쪽 자식 idx의 값이 현재 idx보다 작으면 아래와 같은 작업을 반복
               const minIdx = this.heap[leftIdx][1] > this.heap[rightIdx][1] ? rightIdx : leftIdx;
+              // 작은 idx 골라내기 : 오른쪽 왼쪽 중 더 작은 값을 선택해서
               this.swap(minIdx, curIdx);
+              // 더 작은 자식 idx와 현재 idx를 swap
               curIdx = minIdx;
               leftIdx = curIdx * 2;
               rightIdx = curIdx * 2 + 1;
-              
-              if(leftIdx >= this.size()) break;
+              // 현재 idx, 왼쪽 idx, 오른쪽 idx 다시 값 할당
+              if(leftIdx >= this.size()) break; // 왼쪽 자식 idx가 배열의 크기보다 클 수 없으므로 중지
           }
   
-          return min;
+          return min; // min값 반환
       }
   }
 const jobs = [[0, 3], [1, 9], [2, 6]]
