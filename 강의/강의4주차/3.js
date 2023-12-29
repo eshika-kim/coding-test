@@ -5,6 +5,7 @@
 // 출력 멘토, 멘티 경우의 수
 function solution(test){
     let answer = 0;
+    const temp = []
     const testCount = test.length
     const studentCount = test[0].length;
     for(let i = 1; i <= studentCount; i++) {
@@ -21,16 +22,19 @@ function solution(test){
                     if(test[k][s] === i) pi = s // s는 등수가 된다.
                     if(test[k][s] === j) pj = s
                 }
-                if(pi > pj) {
+                if(pi < pj) {
                     cnt ++
                     pi = 0
                     pj = 0
                 }
             }
-            if(cnt === testCount) answer ++
+            if(cnt === testCount) {
+                answer ++
+                temp.push([i, j])
+            }
         }
     }
-    return answer;
+    return {answer, temp};
 }
 
 let arr=[[3, 4, 1, 2], [4, 3, 2, 1], [3, 1, 4, 2]];
