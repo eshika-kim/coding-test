@@ -24,13 +24,14 @@ function solution(S, N, num) {
             cache[S-1] = number
             for(let i = S - 1; i >= 1; i--) { // 삽입 정렬
                 cache[i] = cache[i-1] 
-            } cache[0] = number
+            } 
         }
         if(cache.includes(number)) {
             for(let i = cache.findIndex(a=> a===number); i >= 1; i--) { // 배열에 작업 번호가 있으면 Cache hit
                 cache[i] = cache[i-1] 
-            } cache[0] = number
+            } 
         }
+        cache[0] = number
     })
     return cache
 }
