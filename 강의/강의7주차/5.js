@@ -28,8 +28,13 @@ function solution(S, N, num) {
         }
         if(cache.includes(number)) {
             for(let i = cache.findIndex(a=> a===number); i >= 1; i--) { // 배열에 작업 번호가 있으면 Cache hit
+<<<<<<< HEAD
                 cache[i] = cache[i-1] 
             } 
+=======
+                cache[i] = cache[i-1]
+            } cache[0] = number
+>>>>>>> 685c3dec7ed73d30cf3bf190a18bc0e38e6ecced
         }
         cache[0] = number
     })
