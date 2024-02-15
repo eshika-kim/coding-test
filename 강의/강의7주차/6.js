@@ -10,7 +10,8 @@ function solution(arr){
     for(let i = 0; i < arr.length; i++) {
         tmp.push(arr[i])
     }
-    arr.sort((a, b) => a - b)
+    arr.sort((a, b) => a - b) // !!숫자 정렬, 그냥하면 문자열 정렬되어버림
+    // 100이랑 99가 있으면 99가 뒤로감
     for(let i = 0; i < arr.length; i++) {
         if(tmp[i] !== arr[i]) answer.push(i+1)
     }
