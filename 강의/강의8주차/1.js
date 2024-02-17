@@ -13,7 +13,7 @@ function S1(L) {
     } // 3, 2, 1순으로 출력된다.
     DFS(L)
 }
-ß
+
 function S2(L) {
     function DFS(L) {
         if(L <= 0 ) return
