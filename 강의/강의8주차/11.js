@@ -8,7 +8,6 @@ function solution(N) {
         }
         else {
             mul = L * mul
-            console.log(L, mul)
             DFS(L + 1, mul)
         }
     }
@@ -16,4 +15,15 @@ function solution(N) {
     return answer;
 }
 
+function solution2(n) {
+    let answer;
+    function DFS(n) {
+        if(n === 1) return 1;
+        else return n*DFS(n-1)
+    }
+    answer = DFS(n);
+    return answer;
+}
+
 console.log(solution(5))
+console.log(solution2(5))
