@@ -32,7 +32,7 @@ function solution(priorities, location) {
         else if(priorities[0] === max) { // 우선순위가 같으면 그냥 실행
             answer ++;
             priorities.shift();
-            if(queue.shift() === location) { // 
+            if(queue.shift() === location) { // location === idx이므로 
                 return answer
             }
         }
