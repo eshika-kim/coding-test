@@ -2,7 +2,7 @@
 // scoville = [], 가지고 있는 음식의 모든 스코빌 지수
 // 섞은 음식의 스코빌 지수 = 가장 맵지 않은 음식의 스코빌 지수 + (두 번째로 맵지 않은 음식의 스코빌 지수 * 2)
 // 배열의 각 값이 K 이상이 될 때까지 섞어야 하는 횟수를 return
-
+// 예시 K = 7, scovile = [1, 2, 3, 9, 10, 12]
 
 function solution(scoville, K) {
     const minHeap = new MinHeap()
