@@ -4,6 +4,7 @@ function solution(n, costs) {
         graph[a].push({node: b, cost})
         graph[b].push({node: a, cost})
     }
+    console.log(graph)
     const ch = Array(n).fill(0);
     const queue = [];
     let answer = 0;
@@ -18,12 +19,11 @@ function solution(n, costs) {
     // 큐를 cost로 오름차순 정렬 
 
     while(queue.length > 0) { //queue 가 비워지면 끝남
-        console.log(queue)
-        const {node, cost} = queue.shift() // 가장 작은 비용을 꺼낸다.
-
+        const {node, cost} = queue.shift()
+        // 정렬이 되었으므로 항상 작은 비용이 먼저 꺼내진다.
+        // 이후에 큐를 방문하면 체크된 다리는 그냥 shift되면서 다음으로 넘어간다.
         // 이미 방문한 노드면 건너뛴다.
         if(ch[node]===1) continue;
-        console.log(node, 'node확인')
         // 방문하지 않았다면 비용을 누적한다.
         answer += cost;
         ch[node] = 1; // 방문을 했으니 체크한다.
@@ -32,12 +32,8 @@ function solution(n, costs) {
                 queue.push({node: nextNode, cost: nextCost})
                 queue.sort((a, b) => a.cost - b.cost)
             }
-            
-
         }
-
     }
-
     return answer;
 }
 
